@@ -1,18 +1,29 @@
 #DB Functions
 
 #import * safe
-import MySQLdb
-import re
-from utilities import *
-import ConfigParser
+import MySQLdb
 
-config=ConfigParser.ConfigParser()
-config.read("/etc/swara.conf")
-DB_USER = config.get("Database","username")
-DB_PASSWD = config.get("Database","password")
-DB_HOST = config.get("Database","host")
-DB_PORT = int(config.get("Database","port"))
-DB_NAME = config.get("Database","dbname")
+import re
+
+from utilities import *
+
+import ConfigParser
+
+
+config=ConfigParser.ConfigParser()
+
+config.read("/etc/swara.conf")
+
+DB_USER = config.get("Database","username")
+
+DB_PASSWD = config.get("Database","password")
+
+DB_HOST = config.get("Database","host")
+
+DB_PORT = int(config.get("Database","port"))
+
+DB_NAME = config.get("Database","dbname")
+
 
 class Database:
     def __init__(self,db_port=DB_PORT,db_host=DB_HOST,
@@ -188,7 +199,7 @@ class Database:
         self.db.commit()
 
     def addInvalidkeyEvent(self, key, when, duration, callid):        
-        self.c.execute("INSERT INTO analytics (eventype, invdgtpsd, context, whenpressed,callid) VALUES (%s, %s, %s, %s);" ,('Invalid Keypress', str(key), str(when), str(duration),str(callid),))
+        self.c.execute("INSERT INTO analytics (eventype, invdgtpsd, context, whenpressed,callid) VALUES (%s, %s, %s, %s, %s);" ,('Invalid Keypress', str(key), str(when), str(duration),str(callid),))
         self.db.commit()
 
     def addMessageRecordEvent(self, postID,callid):
@@ -247,4 +258,3 @@ class Database:
         posts = self.c.fetchall()
         posts = [i[0] for i in posts]
         return posts
-
