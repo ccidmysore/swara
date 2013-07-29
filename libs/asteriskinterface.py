@@ -75,7 +75,8 @@ def recordFile (fname, stopDigits, timeout, silenceTimeout):
     automatically in seconds
     """
     debugPrint("STARTING RECORD FILE")
-    ms_timeout = 180000 #int(timeout*1000)
+    # Anil TODO: Below the time was changed from 180000 to 120000. Revert it whenever needed
+    ms_timeout = 120000 #int(timeout*1000)
     seconds_silenceTimeout = -1 #int(silenceTimeout)
     cmdString = "RECORD FILE %s wav %s %s BEEP s=%d\n" % (fname, \
                                                           stopDigits, \
