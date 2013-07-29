@@ -102,6 +102,8 @@ def mainMenu():
     keyDict['8'] = (invalidDigit,(8, 'Main Menu', tmm,))
     keyDict['9'] = (invalidDigit,(9, 'Main Menu', tmm,))
     try:
+        # Definition of below playFile call can be found in
+        # asteriskinterface.py file under libs folder
         playFile(PROMPTS_DIR+'welcome', keyDict)
         for i in range(1,4):
             playFile(PROMPTS_DIR+'record-1', keyDict)
@@ -116,14 +118,14 @@ def playBack(intro=None):
     posts = db.getPostsInChannel('12345')
     if len(posts) == 0:
         return playFile(PROMPTS_DIR+'no-comments', keyDict)
-    playFile(PROMPTS_DIR+'mistake-0', keyDict)
+    #playFile(PROMPTS_DIR+'mistake-0', keyDict)
     playFile(PROMPTS_DIR+intro, keyDict)
     count = 0
     for postID in posts:
         os.system("echo %s >> /opt/swara/log.txt" %(postID))
 	tpb = stopwatch.Timer()
         count = count + 1
-        if (count==5):
+        if (count==25):
             break
         keyDict['1'] = (skipComment,(postID, tpb))
         keyDict['3'] = (invalidDigit,(3, 'Playback', tpb,))
@@ -139,6 +141,7 @@ def playBack(intro=None):
             pass
         db.addPlaybackEvent(postID, tpb, callID) #ARJUN PATCHED with CallID
     tpbm = stopwatch.Timer()
+    #playFile(PROMPTS_DIR+'now-recorded-messages-will-be-played')
     playFile(PROMPTS_DIR+'for-older-posts')
     keyDict2 = newKeyDict()
     keyDict2['1'] = (addComment,())
@@ -151,10 +154,11 @@ def playBack(intro=None):
     keyDict2['8'] = (invalidDigit,(8, 'Main Menu after Playback', tpbm,))
     keyDict2['9'] = (invalidDigit,(9, 'Main Menu after Playback', tpbm,))
     playFile(PROMPTS_DIR+'this-cgnet-swara', keyDict2)
-    for i in range(1,4):
-        playFile(PROMPTS_DIR+'record-1', keyDict2)
-        playFile(PROMPTS_DIR+'listen-2', keyDict2)
-        playFile(PROMPTS_DIR+'wait-5-seconds', keyDict2)
+    playFile(PROMPTS_DIR+'thankyou-for-calling', keyDict2)
+    #for i in range(1,4):
+    #    playFile(PROMPTS_DIR+'record-1', keyDict2)
+    #    playFile(PROMPTS_DIR+'listen-2', keyDict2)
+    #    playFile(PROMPTS_DIR+'wait-5-seconds', keyDict2)
     hangup()
 
 def invalidDigit(key, context, time):
@@ -183,7 +187,8 @@ def skipComment(commentID, time):
     db.addSkipEvent(commentID, time, callID)
 
 def addComment():
-    playFile(PROMPTS_DIR+'mistake-0')
+    # Anil TODO modified code here. Commented the below
+    #playFile(PROMPTS_DIR+'mistake-0')
     while True:
         commentTempFileName = recordFileNoPlayback(PROMPTS_DIR+'record-message-beep',300)
         if commentTempFileName:
@@ -219,11 +224,12 @@ def addComment():
     keyDict2['7'] = (invalidDigit,(7, 'Main Menu after Recording', trm,))
     keyDict2['8'] = (invalidDigit,(8, 'Main Menu after Recording', trm,))
     keyDict2['9'] = (invalidDigit,(9, 'Main Menu after Recording', trm,))
-    for i in range(1,4):
-        playFile(PROMPTS_DIR+'this-cgnet-swara', keyDict2)
-        playFile(PROMPTS_DIR+'record-1', keyDict2)
-        playFile(PROMPTS_DIR+'listen-2', keyDict2)
-        playFile(PROMPTS_DIR+'wait-5-seconds', keyDict2)
+    playFile(PROMPTS_DIR+'this-cgnet-swara', keyDict2)
+    playFile(PROMPTS_DIR+'thankyou-for-calling', keyDict2)
+    #for i in range(1,4):
+    #    playFile(PROMPTS_DIR+'record-1', keyDict2)
+    #    playFile(PROMPTS_DIR+'listen-2', keyDict2)
+    #    playFile(PROMPTS_DIR+'wait-5-seconds', keyDict2)
     hangup()
 
 def recordFileNoPlayback(introFilename, recordLen=30000):
@@ -286,6 +292,8 @@ if __name__=='__main__':
     while True:
         try:
             mainMenu()
+            #The playing of prompts happens with the above
+            # call to mainMenu()
         except KeyPressException, e:
             if e.key != '0':
                 #db.addInvalidkeyEvent(e.key, 'mm', 5) Arjun patched with CallID
